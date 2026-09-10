@@ -10,7 +10,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 class DecreesTable
 {
@@ -26,8 +25,6 @@ class DecreesTable
                     ->date()
                     ->sortable(),
                 TextColumn::make('url')
-                    ->url(fn (string $state): string => $state, shouldOpenInNewTab: true)
-                    ->color('primary')
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make('created_at')
@@ -44,11 +41,7 @@ class DecreesTable
                     ->label(__('Year'))
                     ->options(fn (): array => Decree::query()
                         ->whereNotNull('date')
-                        ->selectRaw(match (DB::connection()->getDriverName()) {
-                            'sqlite' => "strftime('%Y', date) as year",
-                            'pgsql' => "to_char(date, 'YYYY') as year",
-                            default => 'YEAR(date) as year',
-                        })
+                        ->selectRaw('YEAR(date) as year')
                         ->distinct()
                         ->orderByDesc('year')
                         ->pluck('year', 'year')
