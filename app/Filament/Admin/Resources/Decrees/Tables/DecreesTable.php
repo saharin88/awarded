@@ -42,11 +42,18 @@ class DecreesTable
                     ->toggleable(),
                 TextColumn::make('awardees_count')
                     ->label(__('Awardees'))
-                    ->counts('awardees')
+                    ->counts([
+                        'awardees',
+                        'awardees as posthumous_awardees_count' => fn (Builder $query): Builder => $query->where('is_posthumous', true),
+                    ])
                     ->url(fn ($state, Decree $record): ?string => $state > 0 ? AwardeeResource::getFilteredIndexUrl([
                         'decree' => [$record->getKey()],
                     ]) : null)
+                    ->suffix(fn (Decree $record): string => $record->posthumous_awardees_count > 0
+                        ? ' '.__('(:count posthumous)', ['count' => $record->posthumous_awardees_count])
+                        : '')
                     ->alignCenter()
+                    ->color('primary')
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('created_at')
