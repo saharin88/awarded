@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Database\Factories\DecreeFactory;
+use Database\Factories\AwardFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,16 +11,14 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
- * @property string $number
- * @property Carbon $date
- * @property string $url
+ * @property string $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['number', 'date', 'url'])]
-class Decree extends Model
+#[Fillable(['name'])]
+class Award extends Model
 {
-    /** @use HasFactory<DecreeFactory> */
+    /** @use HasFactory<AwardFactory> */
     use HasFactory;
 
     /**
@@ -29,17 +27,5 @@ class Decree extends Model
     public function awardees(): HasMany
     {
         return $this->hasMany(Awardee::class);
-    }
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'date' => 'date',
-        ];
     }
 }
